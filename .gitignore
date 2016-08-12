@@ -1,0 +1,24 @@
+
+# Created by https://www.gitignore.io/api/vim
+
+### Vim ###
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# session
+Session.vim
+session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+
+# ./libs
+libs/*.a
+libs/*.a.bkp*
+
+build
+
+elf_symbols_gen.h
+third_party

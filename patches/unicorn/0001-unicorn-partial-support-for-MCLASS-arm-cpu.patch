@@ -1,0 +1,45 @@
+From 6224b632c6d27b923b529f9404b530b6fd136b8e Mon Sep 17 00:00:00 2001
+From: Lucian Cojocar <cojocar@google.com>
+Date: Mon, 15 Aug 2016 10:15:11 -0700
+Subject: [PATCH] unicorn: partial support for MCLASS arm cpu
+
+---
+ include/uc_priv.h  | 2 +-
+ qemu/hw/arm/tosa.c | 8 ++++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/uc_priv.h b/include/uc_priv.h
+index a087967..3c31817 100644
+--- a/include/uc_priv.h
++++ b/include/uc_priv.h
+@@ -13,7 +13,7 @@
+ 
+ // These are masks of supported modes for each cpu/arch.
+ // They should be updated when changes are made to the uc_mode enum typedef.
+-#define UC_MODE_ARM_MASK    (UC_MODE_ARM|UC_MODE_THUMB|UC_MODE_LITTLE_ENDIAN)
++#define UC_MODE_ARM_MASK    (UC_MODE_ARM|UC_MODE_THUMB|UC_MODE_LITTLE_ENDIAN|UC_MODE_MCLASS)
+ #define UC_MODE_MIPS_MASK   (UC_MODE_MIPS32|UC_MODE_MIPS64|UC_MODE_LITTLE_ENDIAN|UC_MODE_BIG_ENDIAN)
+ #define UC_MODE_X86_MASK    (UC_MODE_16|UC_MODE_32|UC_MODE_64|UC_MODE_LITTLE_ENDIAN)
+ #define UC_MODE_PPC_MASK    (UC_MODE_PPC64|UC_MODE_BIG_ENDIAN)
+diff --git a/qemu/hw/arm/tosa.c b/qemu/hw/arm/tosa.c
+index 8630e46..0754fa4 100644
+--- a/qemu/hw/arm/tosa.c
++++ b/qemu/hw/arm/tosa.c
+@@ -19,8 +19,12 @@
+ 
+ static int tosa_init(struct uc_struct *uc, MachineState *machine)
+ {
+-    //cpu_arm_init(uc, "pxa255");
+-    uc->cpu = cpu_arm_init(uc, "cortex-a15"); // FIXME
++    if (uc->mode & UC_MODE_MCLASS) {
++        printf("Using cortex-m3\n");
++        uc->cpu = cpu_arm_init(uc, "cortex-m3");
++    } else {
++        uc->cpu = cpu_arm_init(uc, "cortex-a15");
++    }
+ 
+     return 0;
+ }
+-- 
+2.8.0.rc3.226.g39d4020
+
